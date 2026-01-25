@@ -3,6 +3,21 @@
     "title": "Forge Control",
     "subtitle": "Gerenciador de ambiente de desenvolvimento"
   },
+  "menu": {
+    "dashboard": "Dashboard",
+    "processes": "Processos",
+    "projects": "Projetos",
+    "network": "Rede",
+    "settings": "Configurações"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Bem-vindo ao Forge Control",
+    "description": "Monitore e controle seu ambiente de desenvolvimento",
+    "systemOverview": "Visão Geral do Sistema",
+    "quickActions": "Ações Rápidas",
+    "recentActivity": "Atividade Recente"
+  },
   "test": {
     "title": "Teste de Comunicação",
     "description": "Clique no botão para testar a comunicação entre o frontend React e o backend Rust.",

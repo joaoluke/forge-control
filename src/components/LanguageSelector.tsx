@@ -8,30 +8,30 @@ export function LanguageSelector() {
   };
 
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-slate-400 text-sm font-medium">
-        {t('language.label')}:
+    <div className="space-y-2">
+      <span className="text-slate-400 text-xs font-medium uppercase tracking-wider">
+        {t('language.label')}
       </span>
       <div className="flex gap-2">
         <button
           onClick={() => changeLanguage('pt')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+          className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
             i18n.language === 'pt'
               ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-              : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
           }`}
         >
-          🇧🇷 {t('language.portuguese')}
+          🇧🇷
         </button>
         <button
           onClick={() => changeLanguage('en')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+          className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
             i18n.language === 'en'
               ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-              : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
           }`}
         >
-          🇺🇸 {t('language.english')}
+          🇺🇸
         </button>
       </div>
     </div>

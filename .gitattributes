@@ -17,5 +17,6 @@ src-tauri/src/** linguist-language=Rust
 
 src/** linguist-detectable=false
 *.ts linguist-detectable=false
+*.js linguist-detectable=false
 *.tsx linguist-detectable=false
 vite.config.ts linguist-detectable=false
