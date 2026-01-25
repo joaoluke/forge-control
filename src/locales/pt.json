@@ -1,0 +1,28 @@
+{
+  "app": {
+    "title": "Forge Control",
+    "subtitle": "Gerenciador de ambiente de desenvolvimento"
+  },
+  "test": {
+    "title": "Teste de Comunicação",
+    "description": "Clique no botão para testar a comunicação entre o frontend React e o backend Rust.",
+    "button": "Obter Informações do Sistema",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Informações do Sistema"
+  },
+  "system": {
+    "os": "Sistema Operacional",
+    "version": "Versão",
+    "hostname": "Hostname"
+  },
+  "footer": {
+    "phase": "FASE 0 — Fundação",
+    "stack": "Tauri + React + TypeScript"
+  },
+  "language": {
+    "label": "Idioma",
+    "portuguese": "Português",
+    "english": "English"
+  }
+}
