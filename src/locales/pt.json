@@ -39,5 +39,42 @@
     "label": "Idioma",
     "portuguese": "Português",
     "english": "English"
+  },
+  "processes": {
+    "title": "Processos e Serviços",
+    "description": "Monitore e gerencie processos e servidores em execução",
+    "refresh": "Atualizar",
+    "refreshing": "Atualizando...",
+    "killProcess": "Encerrar Processo",
+    "confirmKill": "Tem certeza que deseja encerrar este processo?",
+    "processKilled": "Processo encerrado com sucesso",
+    "errorKilling": "Erro ao encerrar processo",
+    "noProcesses": "Nenhum processo encontrado",
+    "table": {
+      "pid": "PID",
+      "name": "Nome",
+      "cpu": "CPU",
+      "memory": "Memória",
+      "status": "Status",
+      "actions": "Ações"
+    },
+    "filters": {
+      "all": "Todos",
+      "highCpu": "Alto CPU",
+      "highMemory": "Alta Memória",
+      "search": "Buscar processos..."
+    },
+    "stats": {
+      "totalProcesses": "Total de Processos",
+      "cpuUsage": "Uso de CPU",
+      "memoryUsage": "Uso de Memória"
+    },
+    "ports": {
+      "title": "Aplicações em Portas Locais",
+      "description": "Servidores de desenvolvimento rodando no localhost",
+      "port": "Porta",
+      "noPorts": "Nenhuma aplicação rodando em portas de desenvolvimento",
+      "killPort": "Encerrar"
+    }
   }
 }

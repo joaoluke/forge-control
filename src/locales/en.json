@@ -39,5 +39,42 @@
     "label": "Language",
     "portuguese": "Português",
     "english": "English"
+  },
+  "processes": {
+    "title": "Processes & Services",
+    "description": "Monitor and manage running processes and servers",
+    "refresh": "Refresh",
+    "refreshing": "Refreshing...",
+    "killProcess": "Kill Process",
+    "confirmKill": "Are you sure you want to kill this process?",
+    "processKilled": "Process killed successfully",
+    "errorKilling": "Error killing process",
+    "noProcesses": "No processes found",
+    "table": {
+      "pid": "PID",
+      "name": "Name",
+      "cpu": "CPU",
+      "memory": "Memory",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "filters": {
+      "all": "All",
+      "highCpu": "High CPU",
+      "highMemory": "High Memory",
+      "search": "Search processes..."
+    },
+    "stats": {
+      "totalProcesses": "Total Processes",
+      "cpuUsage": "CPU Usage",
+      "memoryUsage": "Memory Usage"
+    },
+    "ports": {
+      "title": "Local Port Applications",
+      "description": "Development servers running on localhost",
+      "port": "Port",
+      "noPorts": "No applications running on development ports",
+      "killPort": "Kill"
+    }
   }
 }
