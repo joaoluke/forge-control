@@ -3,12 +3,18 @@
 use serde::{Deserialize, Serialize};
 use sysinfo::{System, Pid, ProcessesToUpdate};
 use std::process::Command;
+use local_ip_address::local_ip;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct SystemInfo {
     os: String,
     version: String,
     hostname: String,
+    internal_ip: String,
+    external_ip: String,
+    total_memory: u64,
+    used_memory: u64,
+    memory_type: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -38,14 +44,45 @@ struct PortInfo {
 
 #[tauri::command]
 fn get_system_info() -> Result<SystemInfo, String> {
+    let mut sys = System::new_all();
+    sys.refresh_memory();
+
     let os = System::name().unwrap_or_else(|| "Unknown".to_string());
     let version = System::os_version().unwrap_or_else(|| "Unknown".to_string());
     let hostname = System::host_name().unwrap_or_else(|| "Unknown".to_string());
+    
+    let internal_ip = local_ip().map(|ip| ip.to_string()).unwrap_or_else(|_| "Unknown".to_string());
+    
+    let external_ip = reqwest::blocking::get("https://api.ipify.org")
+        .and_then(|resp| resp.text())
+        .unwrap_or_else(|_| "Unknown".to_string());
+
+    let total_memory = sys.total_memory();
+    let used_memory = sys.used_memory();
+
+    // Attempt to get memory type via dmidecode (requires root/sudo often, so might fail)
+    let memory_type = Command::new("dmidecode")
+        .arg("-t")
+        .arg("17")
+        .output()
+        .map(|output| {
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            stdout.lines()
+                .find(|line| line.trim().starts_with("Type:") && !line.contains("Detail"))
+                .map(|line| line.replace("Type:", "").trim().to_string())
+                .unwrap_or_else(|| "Unknown".to_string())
+        })
+        .unwrap_or_else(|_| "Unknown".to_string());
 
     Ok(SystemInfo {
         os,
         version,
         hostname,
+        internal_ip,
+        external_ip,
+        total_memory,
+        used_memory,
+        memory_type,
     })
 }
 

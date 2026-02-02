@@ -6,7 +6,18 @@ interface SystemInfo {
   os: string;
   version: string;
   hostname: string;
+  internal_ip: string;
+  external_ip: string;
+  total_memory: number;
+  used_memory: number;
+  memory_type: string;
 }
+
+const formatBytes = (bytes: number) => {
+  const gb = bytes / (1024 * 1024 * 1024);
+  return `${gb.toFixed(2)} GB`;
+};
+
 
 export function Dashboard() {
   const { t } = useTranslation();
@@ -72,6 +83,55 @@ export function Dashboard() {
               <p className="text-slate-400 text-sm">
                 {systemInfo?.version || 'Loading...'}
               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Network and Memory Info */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-indigo-600/20 rounded-lg flex items-center justify-center">
+              <span className="text-2xl">🌐</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-white font-semibold mb-2">Network</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-slate-500 text-xs uppercase font-bold">Internal IP</p>
+                  <p className="text-slate-300 font-mono text-sm">{systemInfo?.internal_ip || 'Loading...'}</p>
+                </div>
+                <div>
+                  <p className="text-slate-500 text-xs uppercase font-bold">External IP</p>
+                  <p className="text-slate-300 font-mono text-sm">{systemInfo?.external_ip || 'Loading...'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-pink-600/20 rounded-lg flex items-center justify-center">
+              <span className="text-2xl">🧠</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-white font-semibold mb-2">Memory Information</h3>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <p className="text-slate-500 text-xs uppercase font-bold">Type</p>
+                  <p className="text-slate-300 font-mono text-sm">{systemInfo?.memory_type || 'Unknown'}</p>
+                </div>
+                <div>
+                  <p className="text-slate-500 text-xs uppercase font-bold">Total</p>
+                  <p className="text-slate-300 font-mono text-sm">{systemInfo ? formatBytes(systemInfo.total_memory) : '...'}</p>
+                </div>
+                <div>
+                  <p className="text-slate-500 text-xs uppercase font-bold">Used</p>
+                  <p className="text-slate-300 font-mono text-sm">{systemInfo ? formatBytes(systemInfo.used_memory) : '...'}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
