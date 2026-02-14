@@ -16,6 +16,7 @@ export function Sidebar() {
     { path: '/processes', icon: '⚙️', labelKey: 'menu.processes' },
     { path: '/projects', icon: '📁', labelKey: 'menu.projects' },
     { path: '/network', icon: '🌐', labelKey: 'menu.network' },
+    { path: '/news', icon: '📰', labelKey: 'menu.news' },
     { path: '/settings', icon: '⚙️', labelKey: 'menu.settings' },
   ];
 
@@ -35,10 +36,9 @@ export function Sidebar() {
             to={item.path}
             end={item.path === '/'}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                isActive
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+              `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
               }`
             }
           >

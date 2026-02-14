@@ -16,4 +16,8 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 sysinfo = "0.31"
 local-ip-address = "0.6"
-reqwest = { version = "0.11", features = ["blocking"] }
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+rss = "2.0"
+chrono = { version = "0.4", features = ["serde"] }
+urlencoding = "2.1"
+readability = "0.3.0"
