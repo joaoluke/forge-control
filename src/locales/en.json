@@ -9,7 +9,17 @@
     "projects": "Projects",
     "network": "Network",
     "news": "News",
-    "settings": "Settings"
+    "settings": "Settings",
+    "music": "Music"
+  },
+  "music": {
+    "title": "Music Player",
+    "description": "Listen to your local music collection",
+    "selectFolder": "Select Folder",
+    "noSongs": "No songs found in this folder",
+    "nowPlaying": "Now Playing",
+    "playlist": "Playlist",
+    "songs": "songs"
   },
   "dashboard": {
     "title": "Dashboard",

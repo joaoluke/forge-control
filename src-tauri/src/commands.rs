@@ -2,8 +2,9 @@ use sysinfo::{System, ProcessesToUpdate};
 use std::process::Command;
 use local_ip_address::local_ip;
 use rss::Channel;
-use crate::models::{SystemInfo, ProcessInfo, SystemStats, PortInfo, NewsItem};
+use crate::models::{SystemInfo, ProcessInfo, SystemStats, PortInfo, NewsItem, AudioFile};
 use crate::utils::translate_text;
+use walkdir::WalkDir;
 
 #[tauri::command]
 pub fn get_system_info() -> Result<SystemInfo, String> {
@@ -284,5 +285,45 @@ pub fn fetch_article_content(url: String, translate: bool) -> Result<String, Str
     } else {
         Ok(product.content)
     }
+}
+
+#[tauri::command]
+pub fn select_folder() -> Result<Option<String>, String> {
+    let folder = rfd::FileDialog::new()
+        .set_title("Selecionar pasta de músicas")
+        .pick_folder();
+
+    Ok(folder.map(|p| p.to_string_lossy().to_string()))
+}
+
+#[tauri::command]
+pub fn list_audio_files(path: String) -> Result<Vec<AudioFile>, String> {
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(path)
+        .max_depth(5)
+        .into_iter()
+        .filter_map(|e| e.ok()) {
+            if entry.file_type().is_file() {
+                if let Some(ext) = entry.path().extension() {
+                    if ext.to_string_lossy().to_lowercase() == "mp3" {
+                        let name = entry.file_name().to_string_lossy().to_string();
+                        let path = entry.path().to_string_lossy().to_string();
+                        let parent_path = entry.path()
+                            .parent()
+                            .map(|p| p.to_string_lossy().to_string())
+                            .unwrap_or_else(|| "".to_string());
+
+                        files.push(AudioFile {
+                            name,
+                            path,
+                            parent_path,
+                        });
+                    }
+                }
+            }
+        }
+    
+    Ok(files)
 }
 

@@ -48,3 +48,10 @@ pub struct NewsItem {
     pub source: String,
     pub category: String,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct AudioFile {
+    pub name: String,
+    pub path: String,
+    pub parent_path: String,
+}

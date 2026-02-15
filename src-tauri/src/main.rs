@@ -16,7 +16,9 @@ fn main() {
             kill_process,
             get_port_processes,
             fetch_news,
-            fetch_article_content
+            fetch_article_content,
+            select_folder,
+            list_audio_files
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

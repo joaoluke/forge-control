@@ -17,6 +17,7 @@ export function Sidebar() {
     { path: '/projects', icon: '📁', labelKey: 'menu.projects' },
     { path: '/network', icon: '🌐', labelKey: 'menu.network' },
     { path: '/news', icon: '📰', labelKey: 'menu.news' },
+    { path: '/music', icon: '🎵', labelKey: 'menu.music' },
     { path: '/settings', icon: '⚙️', labelKey: 'menu.settings' },
   ];
 

@@ -1,0 +1,266 @@
+import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { invoke } from '@tauri-apps/api/core';
+import { convertFileSrc } from '@tauri-apps/api/core';
+
+interface AudioFile {
+    name: string;
+    path: string;
+    parent_path: string;
+}
+
+export function Music() {
+    const { t } = useTranslation();
+    const [folderPath, setFolderPath] = useState<string | null>(null);
+    const [songs, setSongs] = useState<AudioFile[]>([]);
+    const [currentSongIndex, setCurrentSongIndex] = useState<number>(-1);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const [volume, setVolume] = useState(0.7);
+
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = volume;
+        }
+    }, [volume]);
+
+    const handleSelectFolder = async () => {
+        try {
+            const selected = await invoke<string | null>('select_folder');
+            if (selected) {
+                setFolderPath(selected);
+                const files = await invoke<AudioFile[]>('list_audio_files', { path: selected });
+                setSongs(files);
+                setCurrentSongIndex(-1);
+                setIsPlaying(false);
+            }
+        } catch (error) {
+            console.error('Error selecting folder:', error);
+        }
+    };
+
+    const playSong = (index: number) => {
+        setCurrentSongIndex(index);
+        setIsPlaying(true);
+        if (audioRef.current) {
+            audioRef.current.src = convertFileSrc(songs[index].path);
+            audioRef.current.play();
+        }
+    };
+
+    const togglePlay = () => {
+        if (!songs.length || currentSongIndex === -1) return;
+
+        if (isPlaying) {
+            audioRef.current?.pause();
+        } else {
+            audioRef.current?.play();
+        }
+        setIsPlaying(!isPlaying);
+    };
+
+    const nextSong = () => {
+        if (!songs.length) return;
+        const nextIndex = (currentSongIndex + 1) % songs.length;
+        playSong(nextIndex);
+    };
+
+    const prevSong = () => {
+        if (!songs.length) return;
+        const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+        playSong(prevIndex);
+    };
+
+    const handleTimeUpdate = () => {
+        if (audioRef.current) {
+            setProgress(audioRef.current.currentTime);
+            setDuration(audioRef.current.duration);
+        }
+    };
+
+    const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const time = parseFloat(e.target.value);
+        if (audioRef.current) {
+            audioRef.current.currentTime = time;
+            setProgress(time);
+        }
+    };
+
+    const formatTime = (time: number) => {
+        if (isNaN(time)) return '0:00';
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    };
+
+    return (
+        <div className="flex flex-col h-full bg-slate-900 text-white">
+            {/* Header */}
+            <div className="p-8 pb-4">
+                <div className="flex justify-between items-end mb-6">
+                    <div>
+                        <h1 className="text-4xl font-bold mb-2">{t('music.title')}</h1>
+                        <p className="text-slate-400">{t('music.description')}</p>
+                    </div>
+                    <button
+                        onClick={handleSelectFolder}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-medium transition-colors flex items-center gap-2 shadow-lg shadow-blue-600/20"
+                    >
+                        <span>📂</span> {t('music.selectFolder')}
+                    </button>
+                </div>
+
+                {folderPath && (
+                    <div className="bg-slate-800/50 backdrop-blur-md rounded-lg p-3 border border-slate-700/50 flex items-center gap-3">
+                        <span className="text-slate-500 text-sm font-mono truncate">
+                            {folderPath}
+                        </span>
+                        <span className="bg-slate-700 text-xs px-2 py-1 rounded text-slate-300">
+                            {songs.length} {t('music.songs')}
+                        </span>
+                    </div>
+                )}
+            </div>
+
+            {/* Playlist */}
+            <div className="flex-1 overflow-y-auto px-8 py-4">
+                {!songs.length ? (
+                    <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-4">
+                        <span className="text-6xl">🎵</span>
+                        <p>{t('music.noSongs')}</p>
+                    </div>
+                ) : (
+                    <table className="w-full text-left border-separate border-spacing-y-2">
+                        <thead>
+                            <tr className="text-slate-500 text-sm uppercase tracking-wider">
+                                <th className="pb-2 pl-4 w-12">#</th>
+                                <th className="pb-2">{t('processes.table.name')}</th>
+                                <th className="pb-2">Path</th>
+                                <th className="pb-2 w-12"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {songs.map((song, index) => (
+                                <tr
+                                    key={song.path}
+                                    onClick={() => playSong(index)}
+                                    className={`group cursor-pointer hover:bg-slate-800 transition-colors ${currentSongIndex === index ? 'bg-blue-600/20 text-blue-400' : ''
+                                        }`}
+                                >
+                                    <td className="py-3 pl-4 rounded-l-lg border-y border-l border-transparent group-hover:border-slate-700">
+                                        {currentSongIndex === index && isPlaying ? (
+                                            <span className="animate-pulse">🔊</span>
+                                        ) : (
+                                            index + 1
+                                        )}
+                                    </td>
+                                    <td className="py-3 font-medium border-y border-transparent group-hover:border-slate-700">
+                                        {song.name.replace('.mp3', '')}
+                                    </td>
+                                    <td className="py-3 text-slate-500 text-sm truncate max-w-xs border-y border-transparent group-hover:border-slate-700">
+                                        {song.parent_path}
+                                    </td>
+                                    <td className="py-3 pr-4 rounded-r-lg border-y border-r border-transparent group-hover:border-slate-700">
+                                        <button className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                            ▶️
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
+
+            {/* Playback Bar */}
+            <div className="bg-slate-800/90 backdrop-blur-xl border-t border-slate-700 p-4 px-8 flex items-center justify-between gap-8 h-24">
+                {/* Info Area */}
+                <div className="flex items-center gap-4 w-1/4">
+                    <div className="w-14 h-14 bg-slate-700 rounded-md flex items-center justify-center text-2xl shadow-inner">
+                        {currentSongIndex !== -1 ? '🎵' : '💿'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        {currentSongIndex !== -1 ? (
+                            <>
+                                <h4 className="font-semibold text-sm truncate">
+                                    {songs[currentSongIndex].name.replace('.mp3', '')}
+                                </h4>
+                                <p className="text-slate-400 text-xs truncate">
+                                    {songs[currentSongIndex].parent_path.split('\\').pop() || 'Unknown Album'}
+                                </p>
+                            </>
+                        ) : (
+                            <p className="text-slate-500 text-sm font-medium">Forge Music</p>
+                        )}
+                    </div>
+                </div>
+
+                {/* Controls Area */}
+                <div className="flex flex-col items-center gap-2 flex-1 max-w-md">
+                    <div className="flex items-center gap-6">
+                        <button
+                            onClick={prevSong}
+                            className="text-slate-400 hover:text-white transition-colors text-xl"
+                        >
+                            ⏮️
+                        </button>
+                        <button
+                            onClick={togglePlay}
+                            className="bg-white text-black w-10 h-10 rounded-full flex items-center justify-center hover:scale-105 transition-transform"
+                        >
+                            {isPlaying ? '⏸️' : '▶️'}
+                        </button>
+                        <button
+                            onClick={nextSong}
+                            className="text-slate-400 hover:text-white transition-colors text-xl"
+                        >
+                            ⏭️
+                        </button>
+                    </div>
+                    <div className="w-full flex items-center gap-2">
+                        <span className="text-[10px] text-slate-500 font-mono w-10 text-right">
+                            {formatTime(progress)}
+                        </span>
+                        <input
+                            type="range"
+                            min="0"
+                            max={duration || 0}
+                            value={progress}
+                            onChange={handleSeek}
+                            className="flex-1 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                        />
+                        <span className="text-[10px] text-slate-500 font-mono w-10">
+                            {formatTime(duration)}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Volume Area */}
+                <div className="flex items-center gap-3 w-1/4 justify-end">
+                    <span className="text-slate-400 text-sm">
+                        {volume === 0 ? '🔇' : volume < 0.5 ? '🔉' : '🔊'}
+                    </span>
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={volume}
+                        onChange={(e) => setVolume(parseFloat(e.target.value))}
+                        className="w-24 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    />
+                </div>
+            </div>
+
+            <audio
+                ref={audioRef}
+                onTimeUpdate={handleTimeUpdate}
+                onEnded={nextSong}
+                onLoadedMetadata={() => audioRef.current && setDuration(audioRef.current.duration)}
+            />
+        </div>
+    );
+}

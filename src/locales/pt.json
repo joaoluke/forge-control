@@ -9,7 +9,17 @@
     "projects": "Projetos",
     "network": "Rede",
     "news": "Notícias",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "music": "Música"
+  },
+  "music": {
+    "title": "Player de Música",
+    "description": "Ouça sua coleção de músicas local",
+    "selectFolder": "Selecionar Pasta",
+    "noSongs": "Nenhuma música encontrada nesta pasta",
+    "nowPlaying": "Tocando Agora",
+    "playlist": "Playlist",
+    "songs": "músicas"
   },
   "dashboard": {
     "title": "Dashboard",
