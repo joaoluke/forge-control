@@ -306,7 +306,7 @@ pub fn list_audio_files(path: String) -> Result<Vec<AudioFile>, String> {
         .filter_map(|e| e.ok()) {
             if entry.file_type().is_file() {
                 if let Some(ext) = entry.path().extension() {
-                    if ext.to_string_lossy().to_lowercase() == "mp3" {
+                    if ext.to_string_lossy().to_lowercase() == "mp3" || ext.to_string_lossy().to_lowercase() == "m4a" {
                         let name = entry.file_name().to_string_lossy().to_string();
                         let path = entry.path().to_string_lossy().to_string();
                         let parent_path = entry.path()
